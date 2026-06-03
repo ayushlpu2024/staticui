@@ -20,6 +20,7 @@ import { Tags } from './collections/Tags'
 import { Blocks } from './collections/Blocks'
 import { Pages } from './collections/Pages'
 import { Templates } from './collections/Templates'
+import { Products } from './collections/Products'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
@@ -30,7 +31,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Categories, Tags, Components, Blocks, Pages, Templates, Contacts, Plans, Subscriptions, Payments, Webhooks],
+  collections: [Users, Media, Categories, Tags, Components, Blocks, Pages, Templates, Contacts, Plans, Subscriptions, Payments, Webhooks, Products],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

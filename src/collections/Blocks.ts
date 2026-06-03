@@ -140,8 +140,8 @@ export const Blocks: CollectionConfig = {
           const reqPlan = siblingData?.minimumPlanRequired || 'free'
           if (reqPlan === 'free') return true
           if (!user) return false
-          if (user.plan === 'premium') return true
-          if (user.plan === 'advance' && reqPlan === 'advance') return true
+          if ((user as any).plan === 'premium') return true
+          if ((user as any).plan === 'advance' && reqPlan === 'advance') return true
           return false
         },
       },

@@ -22,19 +22,19 @@ export function Hero() {
           Our platform provides the developer tools and component infrastructure to discover, copy, and integrate premium UI elements into your next project.
         </p>
 
-        <div className="mt-10 mb-20 flex flex-col sm:flex-row gap-4 items-center">
+        <div className="mt-10 mb-20 flex flex-row gap-3 sm:gap-4 items-center justify-center w-full">
           <Link 
             href="/components" 
-            className="h-12 px-8 flex items-center justify-center rounded-full bg-black text-white font-semibold hover:bg-zinc-800 transition-all shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:-translate-y-[1px]"
+            className="h-12 px-4 sm:px-8 flex items-center justify-center rounded-full bg-black text-white font-semibold text-sm sm:text-base hover:bg-zinc-800 transition-all shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:-translate-y-[1px] flex-1 sm:flex-none max-w-[200px]"
           >
-            <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-            Start Exploring
+            <svg className="w-4 h-4 mr-1 sm:mr-2 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span className="truncate">Start Exploring</span>
           </Link>
           <a 
             href="#" 
-            className="h-12 px-8 flex items-center justify-center rounded-full bg-white text-zinc-900 border border-zinc-200 font-semibold hover:border-zinc-300 hover:bg-zinc-50 transition-all shadow-sm"
+            className="h-12 px-4 sm:px-8 flex items-center justify-center rounded-full bg-white text-zinc-900 border border-zinc-200 font-semibold text-sm sm:text-base hover:border-zinc-300 hover:bg-zinc-50 transition-all shadow-sm flex-1 sm:flex-none max-w-[200px]"
           >
-            Submit a Component
+            <span className="truncate">Submit a Component</span>
           </a>
         </div>
       </div>

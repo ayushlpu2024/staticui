@@ -1,15 +1,22 @@
 import React from 'react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { headers } from 'next/headers'
 import Link from 'next/link'
 import { Lock } from 'lucide-react'
+import { auth } from '@/auth'
 
 export async function WithProAccess({ children }: { children: React.ReactNode }) {
-  const payload = await getPayload({ config: configPromise })
-  const headersList = await headers()
-  
-  const { user } = await payload.auth({ headers: headersList })
+  const session = await auth()
+  let user = null
+
+  if (session?.user?.id) {
+    const payload = await getPayload({ config: configPromise })
+    const userDoc = await payload.findByID({
+      collection: 'users',
+      id: session.user.id,
+    })
+    user = userDoc
+  }
 
   if (user && (user.role === 'admin' || user.role === 'proCustomer')) {
     return <>{children}</>

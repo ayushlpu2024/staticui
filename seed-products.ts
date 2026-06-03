@@ -48,7 +48,7 @@ async function seed() {
 
     for (const product of products) {
       await payload.create({
-        collection: 'products',
+        collection: 'products' as any,
         data: product,
       })
     }

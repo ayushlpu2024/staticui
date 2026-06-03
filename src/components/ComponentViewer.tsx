@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { decrementUserQuota } from '@/app/(frontend)/actions/quota';
 
 export function ComponentViewer({
   title,
@@ -15,13 +17,45 @@ export function ComponentViewer({
   iframeSrc?: string;
   children?: React.ReactNode;
 }) {
+  const { data: session, update } = useSession();
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const user = session?.user as any;
+  const isGuest = !user;
+  const isFreeTier = user?.role === 'customer';
+
+  const handleCopy = async () => {
+    if (isGuest) {
+      alert("Please sign in to copy components.");
+      return;
+    }
+
+    if (isFreeTier) {
+      const currentQuota = user.freeComponentQuota ?? 0;
+      if (currentQuota <= 0) {
+        alert("You have reached your limit of free components. Please upgrade to Pro.");
+        return;
+      }
+      
+      const confirmMessage = `You are using your free credentials (${currentQuota}/4 limits).\n\nClick OK to copy the code and use 1 credit. Remaining will be ${currentQuota - 1}/4.`;
+      if (!window.confirm(confirmMessage)) {
+        return;
+      }
+      
+      navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      
+      const res = await decrementUserQuota();
+      if (res.success && res.newQuota !== undefined) {
+        update({ freeComponentQuota: res.newQuota });
+      }
+    } else {
+      navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (

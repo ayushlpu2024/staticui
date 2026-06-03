@@ -80,6 +80,7 @@ export interface Config {
     subscriptions: Subscription;
     payments: Payment;
     webhooks: Webhook;
+    products: Product;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -100,6 +101,7 @@ export interface Config {
     subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
     payments: PaymentsSelect<false> | PaymentsSelect<true>;
     webhooks: WebhooksSelect<false> | WebhooksSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -152,6 +154,9 @@ export interface User {
    * Remaining free components a user can copy (default 4)
    */
   freeComponentQuota?: number | null;
+  googleId?: string | null;
+  name?: string | null;
+  avatar?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -437,6 +442,23 @@ export interface Webhook {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  originalPrice?: string | null;
+  badge?: string | null;
+  rating?: number | null;
+  reviewsCount?: number | null;
+  imageUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -510,6 +532,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'webhooks';
         value: string | Webhook;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: string | Product;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -562,6 +588,9 @@ export interface UsersSelect<T extends boolean = true> {
   razorpayCustomerId?: T;
   subscriptionStatus?: T;
   freeComponentQuota?: T;
+  googleId?: T;
+  name?: T;
+  avatar?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -816,6 +845,22 @@ export interface WebhooksSelect<T extends boolean = true> {
   payload?: T;
   processed?: T;
   error?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  price?: T;
+  originalPrice?: T;
+  badge?: T;
+  rating?: T;
+  reviewsCount?: T;
+  imageUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }

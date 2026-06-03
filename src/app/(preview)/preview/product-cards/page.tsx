@@ -23,7 +23,7 @@ export default async function ProductCardsPreview() {
           badge={product.badge || undefined}
           rating={product.rating || undefined}
           reviewsCount={product.reviewsCount || undefined}
-          imageUrl={product.imageUrl}
+          imageUrl={product.imageUrl || undefined}
         />
       ))}
     </div>

@@ -52,6 +52,21 @@ export const Users: CollectionConfig = {
         description: 'Remaining free components a user can copy (default 4)',
       }
     },
+    {
+      name: 'googleId',
+      type: 'text',
+      admin: {
+        readOnly: true,
+      }
+    },
+    {
+      name: 'name',
+      type: 'text',
+    },
+    {
+      name: 'avatar',
+      type: 'text',
+    },
   ],
   hooks: {
     afterChange: [

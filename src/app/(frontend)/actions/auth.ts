@@ -2,7 +2,8 @@
 
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import { cookies } from 'next/headers'
+import { signIn, signOut } from '@/auth'
+import { AuthError } from 'next-auth'
 
 export async function signUpUser(formData: FormData) {
   const email = formData.get('email') as string
@@ -25,11 +26,19 @@ export async function signUpUser(formData: FormData) {
     })
 
     if (user) {
+      await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
       return { success: true }
     } else {
       return { error: 'Failed to create user' }
     }
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return { error: 'Authentication failed' }
+    }
     console.error('Sign up error:', error)
     return { error: error.message || 'An error occurred during sign up' }
   }
@@ -44,38 +53,26 @@ export async function signInUser(formData: FormData) {
   }
 
   try {
-    const payload = await getPayload({ config: configPromise })
-
-    const result = await payload.login({
-      collection: 'users',
-      data: {
-        email,
-        password,
-      },
+    await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
     })
-
-    if (result && result.token) {
-      // Set the token in a cookie
-      const cookieStore = await cookies()
-      cookieStore.set('payload-token', result.token, {
-        httpOnly: true,
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-        sameSite: 'lax',
-      })
-      
-      return { success: true }
-    } else {
-      return { error: 'Invalid credentials' }
-    }
+    return { success: true }
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return { error: 'Invalid email or password' }
+    }
     console.error('Sign in error:', error)
     return { error: 'Invalid email or password' }
   }
 }
 
 export async function signOutUser() {
-  const cookieStore = await cookies()
-  cookieStore.delete('payload-token')
+  await signOut({ redirect: false })
   return { success: true }
+}
+
+export async function signInWithGoogle() {
+  await signIn('google')
 }

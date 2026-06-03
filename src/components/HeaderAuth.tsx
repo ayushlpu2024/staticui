@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { signOutUser } from '@/app/(frontend)/actions/auth'
+import { signOut } from 'next-auth/react'
 
 export function HeaderAuth({ user }: { user: any }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -24,17 +24,22 @@ export function HeaderAuth({ user }: { user: any }) {
     <div className="flex flex-1 items-center justify-end gap-4 relative">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-sm font-medium hover:text-zinc-950 text-zinc-600"
+        className="flex items-center gap-2 text-sm font-medium hover:text-zinc-950 text-zinc-600 focus:outline-none"
       >
-        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold uppercase">
-          {user.email?.[0] || 'U'}
-        </div>
+        {user.avatar ? (
+          <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-zinc-200 object-cover" />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold uppercase">
+            {user.name?.[0] || user.email?.[0] || 'U'}
+          </div>
+        )}
       </button>
 
       {isOpen && (
         <div className="absolute top-full mt-2 right-0 w-48 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-zinc-200 overflow-hidden z-50">
           <div className="px-4 py-3 border-b border-zinc-100">
-            <p className="text-sm truncate text-zinc-900 font-medium">{user.email}</p>
+            <p className="text-sm truncate text-zinc-900 font-medium">{user.name || user.email}</p>
+            {user.name && <p className="text-xs truncate text-zinc-500">{user.email}</p>}
             <p className="text-xs text-zinc-500 capitalize mt-0.5">
               {user.role === 'admin' || user.role === 'proCustomer' 
                 ? 'Pro/Admin' 
@@ -42,10 +47,7 @@ export function HeaderAuth({ user }: { user: any }) {
             </p>
           </div>
           <button 
-            onClick={async () => {
-              await signOutUser()
-              window.location.reload()
-            }}
+            onClick={() => signOut({ callbackUrl: '/' })}
             className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
           >
             Log out
