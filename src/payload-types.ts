@@ -69,6 +69,17 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    categories: Category;
+    tags: Tag;
+    components: Component;
+    blocks: Block;
+    pages: Page;
+    templates: Template;
+    contacts: Contact;
+    plans: Plan;
+    subscriptions: Subscription;
+    payments: Payment;
+    webhooks: Webhook;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +89,17 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    components: ComponentsSelect<false> | ComponentsSelect<true>;
+    blocks: BlocksSelect<false> | BlocksSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    templates: TemplatesSelect<false> | TemplatesSelect<true>;
+    contacts: ContactsSelect<false> | ContactsSelect<true>;
+    plans: PlansSelect<false> | PlansSelect<true>;
+    subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
+    webhooks: WebhooksSelect<false> | WebhooksSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -123,6 +145,13 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
+  role: 'admin' | 'customer' | 'proCustomer';
+  razorpayCustomerId?: string | null;
+  subscriptionStatus?: ('active' | 'past_due' | 'canceled') | null;
+  /**
+   * Remaining free components a user can copy (default 4)
+   */
+  freeComponentQuota?: number | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -160,6 +189,251 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    tablet?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: string;
+  title: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: string;
+  title: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "components".
+ */
+export interface Component {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  thumbnail?: (string | null) | Media;
+  category: string | Category;
+  tags?: (string | Tag)[] | null;
+  featured?: boolean | null;
+  new?: boolean | null;
+  premium?: boolean | null;
+  minimumPlanRequired: 'free' | 'advance' | 'premium';
+  status?: ('draft' | 'published') | null;
+  sortOrder?: number | null;
+  code: string;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blocks".
+ */
+export interface Block {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  thumbnail?: (string | null) | Media;
+  category: string | Category;
+  tags?: (string | Tag)[] | null;
+  /**
+   * Components used in this block
+   */
+  components?: (string | Component)[] | null;
+  featured?: boolean | null;
+  new?: boolean | null;
+  premium?: boolean | null;
+  minimumPlanRequired: 'free' | 'advance' | 'premium';
+  status?: ('draft' | 'published') | null;
+  sortOrder?: number | null;
+  code: string;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  thumbnail?: (string | null) | Media;
+  category: string | Category;
+  tags?: (string | Tag)[] | null;
+  /**
+   * Blocks used in this page
+   */
+  blocks?: (string | Block)[] | null;
+  featured?: boolean | null;
+  new?: boolean | null;
+  premium?: boolean | null;
+  minimumPlanRequired: 'free' | 'advance' | 'premium';
+  status?: ('draft' | 'published') | null;
+  sortOrder?: number | null;
+  code: string;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "templates".
+ */
+export interface Template {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  thumbnail?: (string | null) | Media;
+  category: string | Category;
+  tags?: (string | Tag)[] | null;
+  /**
+   * Pages used in this template
+   */
+  pages?: (string | Page)[] | null;
+  featured?: boolean | null;
+  new?: boolean | null;
+  premium?: boolean | null;
+  minimumPlanRequired: 'free' | 'advance' | 'premium';
+  status?: ('draft' | 'published') | null;
+  sortOrder?: number | null;
+  code: string;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contacts".
+ */
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  plan: 'free' | 'advance' | 'premium';
+  message?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "plans".
+ */
+export interface Plan {
+  id: string;
+  name: string;
+  slug: string;
+  /**
+   * The Plan ID from the Razorpay dashboard (optional for lifetime plans)
+   */
+  razorpayPlanId?: string | null;
+  price: number;
+  interval: 'monthly' | 'yearly' | 'one-time';
+  features?:
+    | {
+        feature?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions".
+ */
+export interface Subscription {
+  id: string;
+  user: string | User;
+  plan: string | Plan;
+  razorpaySubscriptionId?: string | null;
+  status: 'created' | 'active' | 'completed' | 'expired' | 'cancelled';
+  currentPeriodStart?: string | null;
+  currentPeriodEnd?: string | null;
+  cancelAtPeriodEnd?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: string;
+  user: string | User;
+  amount: number;
+  currency: string;
+  status: 'captured' | 'failed';
+  razorpayPaymentId?: string | null;
+  razorpayOrderId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "webhooks".
+ */
+export interface Webhook {
+  id: string;
+  razorpayEventId: string;
+  eventType: string;
+  payload:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  processed?: boolean | null;
+  error?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -192,6 +466,50 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: string | Tag;
+      } | null)
+    | ({
+        relationTo: 'components';
+        value: string | Component;
+      } | null)
+    | ({
+        relationTo: 'blocks';
+        value: string | Block;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'templates';
+        value: string | Template;
+      } | null)
+    | ({
+        relationTo: 'contacts';
+        value: string | Contact;
+      } | null)
+    | ({
+        relationTo: 'plans';
+        value: string | Plan;
+      } | null)
+    | ({
+        relationTo: 'subscriptions';
+        value: string | Subscription;
+      } | null)
+    | ({
+        relationTo: 'payments';
+        value: string | Payment;
+      } | null)
+    | ({
+        relationTo: 'webhooks';
+        value: string | Webhook;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -240,6 +558,10 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  razorpayCustomerId?: T;
+  subscriptionStatus?: T;
+  freeComponentQuota?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -274,6 +596,228 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        tablet?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "components_select".
+ */
+export interface ComponentsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  thumbnail?: T;
+  category?: T;
+  tags?: T;
+  featured?: T;
+  new?: T;
+  premium?: T;
+  minimumPlanRequired?: T;
+  status?: T;
+  sortOrder?: T;
+  code?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blocks_select".
+ */
+export interface BlocksSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  thumbnail?: T;
+  category?: T;
+  tags?: T;
+  components?: T;
+  featured?: T;
+  new?: T;
+  premium?: T;
+  minimumPlanRequired?: T;
+  status?: T;
+  sortOrder?: T;
+  code?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  thumbnail?: T;
+  category?: T;
+  tags?: T;
+  blocks?: T;
+  featured?: T;
+  new?: T;
+  premium?: T;
+  minimumPlanRequired?: T;
+  status?: T;
+  sortOrder?: T;
+  code?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "templates_select".
+ */
+export interface TemplatesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  thumbnail?: T;
+  category?: T;
+  tags?: T;
+  pages?: T;
+  featured?: T;
+  new?: T;
+  premium?: T;
+  minimumPlanRequired?: T;
+  status?: T;
+  sortOrder?: T;
+  code?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contacts_select".
+ */
+export interface ContactsSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  plan?: T;
+  message?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "plans_select".
+ */
+export interface PlansSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  razorpayPlanId?: T;
+  price?: T;
+  interval?: T;
+  features?:
+    | T
+    | {
+        feature?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions_select".
+ */
+export interface SubscriptionsSelect<T extends boolean = true> {
+  user?: T;
+  plan?: T;
+  razorpaySubscriptionId?: T;
+  status?: T;
+  currentPeriodStart?: T;
+  currentPeriodEnd?: T;
+  cancelAtPeriodEnd?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  user?: T;
+  amount?: T;
+  currency?: T;
+  status?: T;
+  razorpayPaymentId?: T;
+  razorpayOrderId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "webhooks_select".
+ */
+export interface WebhooksSelect<T extends boolean = true> {
+  razorpayEventId?: T;
+  eventType?: T;
+  payload?: T;
+  processed?: T;
+  error?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

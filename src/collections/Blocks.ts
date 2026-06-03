@@ -1,0 +1,164 @@
+import type { CollectionConfig } from 'payload'
+import { createGenerateTSXHook } from './hooks/generateTSX'
+
+export const Blocks: CollectionConfig = {
+  slug: 'blocks',
+  admin: {
+    useAsTitle: 'title',
+  },
+  access: {
+    read: () => true, // Everyone can see that the block exists
+  },
+  hooks: {
+    afterChange: [createGenerateTSXHook('blocks')],
+  },
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        position: 'sidebar',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value, data }) => {
+            if (!value && data?.title) {
+              return data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+            }
+            return value
+          },
+        ],
+      },
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+    },
+    {
+      name: 'thumbnail',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'category',
+      type: 'relationship',
+      relationTo: 'categories',
+      required: true,
+    },
+    {
+      name: 'tags',
+      type: 'relationship',
+      relationTo: 'tags',
+      hasMany: true,
+    },
+    {
+      name: 'components',
+      type: 'relationship',
+      relationTo: 'components',
+      hasMany: true,
+      admin: {
+        description: 'Components used in this block',
+      },
+    },
+    {
+      name: 'featured',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'new',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'premium',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'minimumPlanRequired',
+      type: 'select',
+      options: [
+        { label: 'Free', value: 'free' },
+        { label: 'Advance', value: 'advance' },
+        { label: 'Premium', value: 'premium' },
+      ],
+      defaultValue: 'free',
+      required: true,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'status',
+      type: 'select',
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+      defaultValue: 'draft',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'sortOrder',
+      type: 'number',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'code',
+      type: 'code',
+      admin: {
+        language: 'typescript',
+      },
+      required: true,
+      access: {
+        read: ({ req: { user }, siblingData }) => {
+          const reqPlan = siblingData?.minimumPlanRequired || 'free'
+          if (reqPlan === 'free') return true
+          if (!user) return false
+          if (user.plan === 'premium') return true
+          if (user.plan === 'advance' && reqPlan === 'advance') return true
+          return false
+        },
+      },
+    },
+    {
+      name: 'seoTitle',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'seoDescription',
+      type: 'textarea',
+      admin: {
+        position: 'sidebar',
+      },
+    },
+  ],
+}
